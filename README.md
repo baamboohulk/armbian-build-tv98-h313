@@ -58,3 +58,9 @@ SSH keys or personal backup data.
 
 See [TV98 U-Boot LPDDR3 / TOC0 documentation](docs/tv98/UBOOT.md)
 for the source patch, hardware information and verification notes.
+
+## TOC0 secure boot image
+
+See [TOC0 signing and build documentation](docs/tv98/TOC0.md)
+for the bootloader configuration, signing extension,
+security considerations and verified boot procedure.

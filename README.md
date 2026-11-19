@@ -53,3 +53,8 @@ yet been verified.
 Do not flash Android eMMC.
 Do not publish private signing keys, credentials,
 SSH keys or personal backup data.
+
+## U-Boot support
+
+See [TV98 U-Boot LPDDR3 / TOC0 documentation](docs/tv98/UBOOT.md)
+for the source patch, hardware information and verification notes.

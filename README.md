@@ -64,3 +64,9 @@ for the source patch, hardware information and verification notes.
 See [TOC0 signing and build documentation](docs/tv98/TOC0.md)
 for the bootloader configuration, signing extension,
 security considerations and verified boot procedure.
+
+## Ethernet V2 Device Tree
+
+See [Ethernet V2 source and test evidence](docs/tv98/ETHERNET.md).
+The DTS and patch are now reproducible; kernel-source integration
+and testing of the newly compiled DTB are still pending.

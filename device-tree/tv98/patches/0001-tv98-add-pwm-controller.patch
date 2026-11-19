@@ -1,0 +1,25 @@
+--- a/sun50i-h313-x96q-lpddr3.dts
++++ b/sun50i-h313-x96q-lpddr3.dts
+@@ -1451,6 +1451,22 @@
+ 			reg = <0x7010250 0x10>;
+ 		};
+ 
++		pwm@300a000 {
++			#clock-cells = <0x01>;
++			#pwm-cells = <0x03>;
++			clock-names = "mod", "bus";
++			clocks = <0x12 0x02 0x2f>;
++			compatible = "allwinner,sun50i-h616-pwm";
++			phandle = <0xa9>;
++			pinctrl-0 = <0x59>;
++			pinctrl-names = "default";
++			pwm-base = <0x00>;
++			pwm-number = <0x06>;
++			reg = <0x300a000 0x400>;
++			resets = <0x02 0x0a>;
++			status = "okay";
++		};
++
+ 		r_rsb: rsb@7083000 {
+ 			#address-cells = <0x01>;
+ 			#size-cells = <0x00>;

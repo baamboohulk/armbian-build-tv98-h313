@@ -74,3 +74,9 @@ and testing of the newly compiled DTB are still pending.
 ## PWM5 Early Boot
 
 See [PWM5 boot commands and arguments](docs/tv98/PWM5.md). The known-good microSD configuration has been captured as an offline boot script patcher; full image build and retesting remain pending.
+
+## Linux kernel 6.12.64 candidate
+
+See [TV98 kernel source and build evidence](docs/tv98/KERNEL.md).
+The candidate kernel has compiled successfully but has
+not yet been hardware-tested on TV98.

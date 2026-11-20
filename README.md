@@ -70,3 +70,7 @@ security considerations and verified boot procedure.
 See [Ethernet V2 source and test evidence](docs/tv98/ETHERNET.md).
 The DTS and patch are now reproducible; kernel-source integration
 and testing of the newly compiled DTB are still pending.
+
+## PWM5 Early Boot
+
+See [PWM5 boot commands and arguments](docs/tv98/PWM5.md). The known-good microSD configuration has been captured as an offline boot script patcher; full image build and retesting remain pending.

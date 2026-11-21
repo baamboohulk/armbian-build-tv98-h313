@@ -86,3 +86,7 @@ not yet been hardware-tested on TV98.
 See [image assembly and hardware QA](docs/tv98/IMAGE.md).
 The new image is not hardware-approved until
 it passes testing on a spare microSD.
+
+## English locale
+
+See [TV98 en_US.UTF-8 configuration](docs/tv98/LOCALE.md).

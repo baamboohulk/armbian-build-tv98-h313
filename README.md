@@ -80,3 +80,9 @@ See [PWM5 boot commands and arguments](docs/tv98/PWM5.md). The known-good microS
 See [TV98 kernel source and build evidence](docs/tv98/KERNEL.md).
 The candidate kernel has compiled successfully but has
 not yet been hardware-tested on TV98.
+
+## TV98 Debian Bookworm image
+
+See [image assembly and hardware QA](docs/tv98/IMAGE.md).
+The new image is not hardware-approved until
+it passes testing on a spare microSD.

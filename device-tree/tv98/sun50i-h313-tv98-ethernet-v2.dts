@@ -322,6 +322,8 @@
 			opp-microvolt-speed0 = <0xe09c0 0xe09c0 0x10c8e0>;
 			opp-microvolt-speed1 = <0xe09c0 0xe09c0 0x10c8e0>;
 			opp-microvolt-speed2 = <0xe09c0 0xe09c0 0x10c8e0>;
+			opp-microvolt-speed4 = <1020000 1020000 1100000>;
+			opp-supported-hw = <0x3f>;
 		};
 
 		opp-1200000000 {
@@ -330,6 +332,8 @@
 			opp-microvolt-speed0 = <0xef420 0xef420 0x10c8e0>;
 			opp-microvolt-speed1 = <0xef420 0xef420 0x10c8e0>;
 			opp-microvolt-speed2 = <0xef420 0xef420 0x10c8e0>;
+			opp-microvolt-speed4 = <1100000 1100000 1100000>;
+			opp-supported-hw = <0x3f>;
 		};
 
 		opp-1512000000 {
@@ -338,6 +342,7 @@
 			opp-microvolt-speed0 = <0x10c8e0 0x10c8e0 0x10c8e0>;
 			opp-microvolt-speed1 = <0x10c8e0 0x10c8e0 0x10c8e0>;
 			opp-microvolt-speed2 = <0x10c8e0 0x10c8e0 0x10c8e0>;
+			opp-supported-hw = <0x2a>;
 		};
 
 		opp-480000000 {
@@ -346,6 +351,8 @@
 			opp-microvolt-speed0 = <0xdbba0 0xdbba0 0x10c8e0>;
 			opp-microvolt-speed1 = <0xdbba0 0xdbba0 0x10c8e0>;
 			opp-microvolt-speed2 = <0xdbba0 0xdbba0 0x10c8e0>;
+			opp-microvolt-speed4 = <900000 900000 1100000>;
+			opp-supported-hw = <0x3f>;
 		};
 
 		opp-600000000 {
@@ -354,6 +361,8 @@
 			opp-microvolt-speed0 = <0xdbba0 0xdbba0 0x10c8e0>;
 			opp-microvolt-speed1 = <0xdbba0 0xdbba0 0x10c8e0>;
 			opp-microvolt-speed2 = <0xdbba0 0xdbba0 0x10c8e0>;
+			opp-microvolt-speed4 = <900000 900000 1100000>;
+			opp-supported-hw = <0x12>;
 		};
 
 		opp-792000000 {
@@ -362,6 +371,8 @@
 			opp-microvolt-speed0 = <0xdbba0 0xdbba0 0x10c8e0>;
 			opp-microvolt-speed1 = <0xdbba0 0xdbba0 0x10c8e0>;
 			opp-microvolt-speed2 = <0xdbba0 0xdbba0 0x10c8e0>;
+			opp-microvolt-speed4 = <940000 940000 1100000>;
+			opp-supported-hw = <0x12>;
 		};
 	};
 

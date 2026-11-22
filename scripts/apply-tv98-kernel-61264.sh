@@ -8,11 +8,13 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 EXPECTED="eadca54dc8d891d3ddc159d70c90ca903fdb9c1e"
 PATCH="$ROOT/patch/armbian/0001-tv98-kernel-61264-framework.patch"
 DRIVER="patch/kernel/archive/sunxi-6.12/patches.armbian/driver-allwinner-h618-emac.patch"
+WIFI="patch/kernel/archive/sunxi-6.12/patches.armbian/driver-broadcom-brcmfmac-bcm43342.patch"
 CONFIG="config/kernel/linux-sunxi64-legacy.config"
 
 test "$(git -C "$FW" rev-parse HEAD)" = "$EXPECTED"
 test -z "$(git -C "$FW" status --porcelain)"
 test ! -e "$FW/$DRIVER"
+test ! -e "$FW/$WIFI"
 
 git -C "$FW" apply --check "$PATCH"
 
@@ -22,6 +24,8 @@ printf '%s  %s\n' \
 
 git -C "$FW" apply "$PATCH"
 install -m 644 "$ROOT/$DRIVER" "$FW/$DRIVER"
+install -m 644 "$ROOT/$WIFI" "$FW/$WIFI"
+cmp -s "$ROOT/$WIFI" "$FW/$WIFI"
 install -m 644 "$ROOT/$CONFIG" "$FW/$CONFIG"
 
 git -C "$FW" diff --check

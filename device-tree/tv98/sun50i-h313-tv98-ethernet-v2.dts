@@ -2027,7 +2027,9 @@
 	};
 
 	wifi_pwrseq: wifi-pwrseq {
-		clock-names = "osc32k-out";
+		clock-names = "ext_clock";
+		pinctrl-names = "default";
+		pinctrl-0 = <0x68>;
 		clocks = <0x10 0x01>;
 		compatible = "mmc-pwrseq-simple";
 		phandle = <0x17>;

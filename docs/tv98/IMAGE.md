@@ -69,3 +69,11 @@ eMMC unchanged. Do not install to eMMC.
 
 If the candidate fails, restore operation using
 the previously working microSD.
+
+## Pb397 update
+
+The validated Pb397 workflow uses the seven-argument
+assembler invocation with matching kernel and DTB packages.
+
+See [PWM-PB397.md](PWM-PB397.md) for current validation
+results and binary distribution restrictions.

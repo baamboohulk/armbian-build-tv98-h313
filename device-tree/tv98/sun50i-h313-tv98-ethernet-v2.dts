@@ -1469,13 +1469,44 @@
 			clocks = <0x12 0x02 0x2f>;
 			compatible = "allwinner,sun50i-h616-pwm";
 			phandle = <0xa9>;
-			pinctrl-0 = <0x59>;
-			pinctrl-names = "default";
 			pwm-base = <0x00>;
 			pwm-number = <0x06>;
 			reg = <0x300a000 0x400>;
 			resets = <0x02 0x0a>;
+			sunxi-pwms = <0xaa 0xab 0xac 0xad 0xae 0xaf>;
 			status = "okay";
+			pinctrl-0 = <0x59>;
+			pinctrl-names = "default";
+		};
+
+		pwm0@0300a000 {
+			compatible = "allwinner,sunxi-pwm0";
+			phandle = <0xaa>;
+		};
+
+		pwm1@0300a000 {
+			compatible = "allwinner,sunxi-pwm1";
+			phandle = <0xab>;
+		};
+
+		pwm2@0300a000 {
+			compatible = "allwinner,sunxi-pwm2";
+			phandle = <0xac>;
+		};
+
+		pwm3@0300a000 {
+			compatible = "allwinner,sunxi-pwm3";
+			phandle = <0xad>;
+		};
+
+		pwm4@0300a000 {
+			compatible = "allwinner,sunxi-pwm4";
+			phandle = <0xae>;
+		};
+
+		pwm5@0300a000 {
+			compatible = "allwinner,sunxi-pwm5";
+			phandle = <0xaf>;
 		};
 
 		r_rsb: rsb@7083000 {

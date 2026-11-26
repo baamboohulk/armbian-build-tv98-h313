@@ -11,11 +11,13 @@ DRIVER="patch/kernel/archive/sunxi-6.12/patches.armbian/driver-allwinner-h618-em
 WIFI="patch/kernel/archive/sunxi-6.12/patches.armbian/driver-broadcom-brcmfmac-bcm43342.patch"
 CONFIG="config/kernel/linux-sunxi64-legacy.config"
 BT26_RTC="patch/kernel/archive/sunxi-6.12/patches.armbian/tv98-h616-rtc-autocal.patch"
+PWM_FIX="patch/kernel/archive/sunxi-6.12/patches.armbian/tv98-h616-pwm-vendor-lifetime.patch"
 
 test "$(git -C "$FW" rev-parse HEAD)" = "$EXPECTED"
 test -z "$(git -C "$FW" status --porcelain)"
 test ! -e "$FW/$DRIVER"
 test ! -e "$FW/$BT26_RTC"
+test ! -e "$FW/$PWM_FIX"
 test ! -e "$FW/$WIFI"
 
 git -C "$FW" apply --check "$PATCH"
@@ -27,6 +29,27 @@ printf '%s  %s\n' \
 git -C "$FW" apply "$PATCH"
 install -m 644 "$ROOT/$DRIVER" "$FW/$DRIVER"
 install -m 644 "$ROOT/$BT26_RTC" "$FW/$BT26_RTC"
+install -m 644 "$ROOT/$PWM_FIX" "$FW/$PWM_FIX"
+SERIES="patch/kernel/archive/sunxi-6.12/series.conf"
+test -f "$FW/$SERIES"
+
+for patch_rel in "$BT26_RTC" "$PWM_FIX"; do
+    entry="patches.armbian/${patch_rel##*/}"
+    if grep -Fq "$entry" "$FW/$SERIES"; then
+        echo "STOP=PATCH_ALREADY_IN_SERIES:$entry" >&2
+        exit 1
+    fi
+done
+
+for patch_rel in "$BT26_RTC" "$PWM_FIX"; do
+    entry="patches.armbian/${patch_rel##*/}"
+    printf '\t%s\n' "$entry" >> "$FW/$SERIES"
+done
+
+for patch_rel in "$BT26_RTC" "$PWM_FIX"; do
+    entry="patches.armbian/${patch_rel##*/}"
+    test "$(grep -Fc "$entry" "$FW/$SERIES")" -eq 1
+done
 install -m 644 "$ROOT/$WIFI" "$FW/$WIFI"
 cmp -s "$ROOT/$WIFI" "$FW/$WIFI"
 install -m 644 "$ROOT/$CONFIG" "$FW/$CONFIG"

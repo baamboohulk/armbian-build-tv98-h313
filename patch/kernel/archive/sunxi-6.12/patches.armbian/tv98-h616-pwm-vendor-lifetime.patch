@@ -1,0 +1,232 @@
+diff --git a/drivers/pwm/pwm-sunxi-enhance.c b/drivers/pwm/pwm-sunxi-enhance.c
+--- a/drivers/pwm/pwm-sunxi-enhance.c
++++ b/drivers/pwm/pwm-sunxi-enhance.c
+@@ -157,7 +157,6 @@
+         ret = 0;
+     }
+ 
+-    of_node_put(np);
+ 
+     return ret;
+ }
+@@ -983,134 +982,115 @@
+ 
+ static int sunxi_pwm_probe(struct platform_device *pdev)
+ {
+-    int ret;
+-    unsigned int npwm;
++    struct device_node *np = pdev->dev.of_node;
++    struct platform_device *pwm_pdevice;
++    struct device_node *sub_np;
+     struct pwm_chip *chip;
+     struct sunxi_pwm_chip *pwm;
+-    struct device_node *np = pdev->dev.of_node;
+-    int i;
+-    struct platform_device *pwm_pdevice;
+-    struct device_node *sub_np;
+-
+-    /* read property pwm-number */
++    unsigned int npwm;
++    int ret, i;
++
+     ret = of_property_read_u32(np, "pwm-number", &npwm);
+-    if (ret < 0)
+-    {
++    if (ret < 0) {
+         dev_err(&pdev->dev, "failed to get pwm number: %d, force to one!\n", ret);
+-        /* force to one pwm if read property fail */
+         npwm = 1;
+     }
+ 
+     chip = devm_pwmchip_alloc(&pdev->dev, npwm, sizeof(*pwm));
+-    if (IS_ERR(chip)) {
++    if (IS_ERR(chip))
+         return PTR_ERR(chip);
+-    }
+ 
+     pwm = to_sunxi_pwm_chip(chip);
+-
+-    /* io map pwm base */
+-    pwm->base = (void __iomem *)of_iomap(pdev->dev.of_node, 0);
++    pwm->base = (void __iomem *)of_iomap(np, 0);
+     if (!pwm->base)
+-    {
+-        dev_err(&pdev->dev, "unable to map pwm registers\n");
+-        ret = -EINVAL;
+-        goto err_iomap;
+-    }
+-
+-    /* read property pwm-base */
++        return -EINVAL;
++
+     ret = of_property_read_u32(np, "pwm-base", &chip->id);
+     if (ret < 0)
+-    {
+-        dev_err(&pdev->dev, "failed to get pwm-base: %d, force to -1 !\n", ret);
+-        /* force to one pwm if read property fail */
+         chip->id = -1;
+-    }
+ 
+     chip->dev.parent = &pdev->dev;
+     chip->ops = &sunxi_pwm_ops;
+ 
+-    /* add pwm chip to pwm-core */
+-    ret = pwmchip_add(chip);
+-    if (ret < 0)
+-    {
+-        dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
+-        goto err_add;
+-    }
+-    platform_set_drvdata(pdev, chip);
+-
+-    pwm->config = devm_kzalloc(&pdev->dev, sizeof(*pwm->config) * npwm, GFP_KERNEL);
+-    if (!pwm->config)
+-    {
+-        dev_err(&pdev->dev, "failed to allocate memory!\n");
+-        goto err_alloc;
+-    }
+-
+-    for (i = 0; i < npwm; i++)
+-    {
++    pwm->config = devm_kzalloc(&pdev->dev,
++                               sizeof(*pwm->config) * npwm, GFP_KERNEL);
++    if (!pwm->config) {
++        ret = -ENOMEM;
++        goto err_unmap;
++    }
++
++    for (i = 0; i < npwm; i++) {
+         sub_np = of_parse_phandle(np, "sunxi-pwms", i);
+-        if (IS_ERR_OR_NULL(sub_np))
+-        {
+-            pr_err("%s: can't parse \"sunxi-pwms\" property\n", __func__);
+-            return -EINVAL;
++        if (!sub_np) {
++            dev_err(&pdev->dev, "missing sunxi-pwms[%d]\n", i);
++            ret = -EINVAL;
++            goto err_unmap;
+         }
+ 
+         pwm_pdevice = of_find_device_by_node(sub_np);
++        of_node_put(sub_np);
++
++        if (!pwm_pdevice) {
++            ret = -EPROBE_DEFER;
++            goto err_unmap;
++        }
++
+         ret = sunxi_pwm_get_config(pwm_pdevice, &pwm->config[i]);
++        put_device(&pwm_pdevice->dev);
++
+         if (ret)
+-        {
+-            pr_err("Get config failed,exit!\n");
+-            goto err_get_config;
+-        }
++            goto err_unmap;
+     }
+ 
+     pwm->clk = devm_clk_get_optional(&pdev->dev, "mod");
+-    if (IS_ERR(pwm->clk))
+-        return dev_err_probe(&pdev->dev, PTR_ERR(pwm->clk),
+-                             "get mod clock failed\n");
++    if (IS_ERR(pwm->clk)) {
++        ret = dev_err_probe(&pdev->dev, PTR_ERR(pwm->clk),
++                            "get mod clock failed\n");
++        goto err_unmap;
++    }
+ 
+     pwm->bus_clk = devm_clk_get_optional(&pdev->dev, "bus");
+-    if (IS_ERR(pwm->bus_clk))
+-        return dev_err_probe(&pdev->dev, PTR_ERR(pwm->bus_clk),
+-                             "get bus clock failed\n");
+-
+-    pwm->pwm_rst_clk = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
+-    if (IS_ERR(pwm->pwm_rst_clk))
+-        return dev_err_probe(&pdev->dev, PTR_ERR(pwm->pwm_rst_clk),
+-                             "get reset failed\n");
+-
+-    /* Deassert reset */
++    if (IS_ERR(pwm->bus_clk)) {
++        ret = dev_err_probe(&pdev->dev, PTR_ERR(pwm->bus_clk),
++                            "get bus clock failed\n");
++        goto err_unmap;
++    }
++
++    pwm->pwm_rst_clk = devm_reset_control_get_optional_shared(&pdev->dev,
++                                                               NULL);
++    if (IS_ERR(pwm->pwm_rst_clk)) {
++        ret = dev_err_probe(&pdev->dev, PTR_ERR(pwm->pwm_rst_clk),
++                            "get reset failed\n");
++        goto err_unmap;
++    }
++
+     ret = reset_control_deassert(pwm->pwm_rst_clk);
+     if (ret)
+-    {
+-        dev_err(&pdev->dev, "cannot deassert reset control: %pe\n",
+-                ERR_PTR(ret));
+-        return ret;
+-    }
++        goto err_unmap;
+ 
+     ret = clk_prepare_enable(pwm->clk);
+     if (ret)
+-    {
+-        dev_err(&pdev->dev, "cannot prepare and enable clk %pe\n",
+-                ERR_PTR(ret));
+-        goto err_alloc;
+-    }
++        goto err_reset;
+ 
+     ret = clk_prepare_enable(pwm->bus_clk);
+     if (ret)
+-    {
+-        dev_err(&pdev->dev, "cannot prepare and enable bus_clk %pe\n",
+-                ERR_PTR(ret));
+-        goto err_alloc;
+-    }
+-
+-    return 0;
+-
+-err_get_config:
+-err_alloc:
+-    pwmchip_remove(chip);
+-err_add:
++        goto err_mod_clk;
++
++    ret = pwmchip_add(chip);
++    if (ret)
++        goto err_bus_clk;
++
++    platform_set_drvdata(pdev, chip);
++    return 0;
++
++err_bus_clk:
++    clk_disable_unprepare(pwm->bus_clk);
++err_mod_clk:
++    clk_disable_unprepare(pwm->clk);
++err_reset:
++    reset_control_assert(pwm->pwm_rst_clk);
++err_unmap:
+     iounmap(pwm->base);
+-err_iomap:
+     return ret;
+ }
+ 
+@@ -1118,10 +1098,12 @@
+ {
+     struct pwm_chip *chip = platform_get_drvdata(pdev);
+     struct sunxi_pwm_chip *pwm = to_sunxi_pwm_chip(chip);
+-    clk_disable(pwm->clk);
+-    clk_disable(pwm->bus_clk);
++
++    pwmchip_remove(chip);
++    clk_disable_unprepare(pwm->bus_clk);
++    clk_disable_unprepare(pwm->clk);
+     reset_control_assert(pwm->pwm_rst_clk);
+-    pwmchip_remove(chip);
++    iounmap(pwm->base);
+ }
+ 
+ static int sunxi_pwm_suspend(struct platform_device *pdev, pm_message_t state)

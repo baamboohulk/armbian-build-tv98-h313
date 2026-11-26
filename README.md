@@ -90,3 +90,9 @@ it passes testing on a spare microSD.
 ## English locale
 
 See [TV98 en_US.UTF-8 configuration](docs/tv98/LOCALE.md).
+
+## TV98 Pb397 validation
+
+See [TV98 Pb397 hardware validation](docs/tv98/PWM-PB397.md)
+for the tested PWM/Ethernet configuration, image assembly,
+hardware results and release restrictions.
